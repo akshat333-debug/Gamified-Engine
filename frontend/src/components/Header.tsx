@@ -33,6 +33,9 @@ export default function Header() {
                     <a href="/forms" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
                         📝 Forms
                     </a>
+                    <a href="/export" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
+                        📥 Export
+                    </a>
                     <a href="/dashboard" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
                         📊 Analytics
                     </a>
