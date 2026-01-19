@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
 from app.routers import programs_router, ai_router, export_router, gamification_router
+from app.database import init_db
 
 settings = get_settings()
 
@@ -17,6 +18,8 @@ async def lifespan(app: FastAPI):
     """Application lifespan handler."""
     # Startup
     print("🚀 LogicForge Backend starting...")
+    await init_db()
+    print("✅ Database initialized")
     yield
     # Shutdown
     print("👋 LogicForge Backend shutting down...")

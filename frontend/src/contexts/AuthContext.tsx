@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabase';
+import { supabase, isAuthConfigured } from '@/lib/supabase';
 
 interface UserProfile {
     id: string;
@@ -21,6 +21,7 @@ interface AuthContextType {
     profile: UserProfile | null;
     session: Session | null;
     loading: boolean;
+    isConfigured: boolean;
     signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
     signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
     signOut: () => Promise<void>;
@@ -29,15 +30,29 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Demo profile for when auth is not configured
+const DEMO_PROFILE: UserProfile = {
+    id: 'demo-user',
+    email: 'demo@logicforge.app',
+    full_name: 'Demo User',
+    avatar_url: null,
+    organization_id: null,
+    role: 'program_manager',
+    total_xp: 850,
+    level: 2,
+    current_streak: 5,
+};
+
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
-    const [profile, setProfile] = useState<UserProfile | null>(null);
+    const [profile, setProfile] = useState<UserProfile | null>(
+        isAuthConfigured ? null : DEMO_PROFILE
+    );
     const [session, setSession] = useState<Session | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(isAuthConfigured);
 
     const fetchProfile = async (userId: string) => {
         try {
-            // For now, return mock profile (would fetch from backend in production)
             const mockProfile: UserProfile = {
                 id: userId,
                 email: user?.email || '',
@@ -45,9 +60,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 avatar_url: null,
                 organization_id: null,
                 role: 'program_manager',
-                total_xp: 0,
-                level: 1,
-                current_streak: 0,
+                total_xp: 850,
+                level: 2,
+                current_streak: 5,
             };
             setProfile(mockProfile);
         } catch (error) {
@@ -62,6 +77,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     useEffect(() => {
+        // Skip if Supabase is not configured
+        if (!supabase) {
+            setLoading(false);
+            return;
+        }
+
         // Get initial session
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session);
@@ -80,7 +101,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 if (session?.user) {
                     await fetchProfile(session.user.id);
                 } else {
-                    setProfile(null);
+                    setProfile(isAuthConfigured ? null : DEMO_PROFILE);
                 }
                 setLoading(false);
             }
@@ -90,11 +111,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     const signIn = async (email: string, password: string) => {
+        if (!supabase) return { error: new Error('Auth not configured') };
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         return { error };
     };
 
     const signUp = async (email: string, password: string, fullName: string) => {
+        if (!supabase) return { error: new Error('Auth not configured') };
         const { error } = await supabase.auth.signUp({
             email,
             password,
@@ -106,6 +129,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     const signOut = async () => {
+        if (!supabase) {
+            setProfile(DEMO_PROFILE);
+            return;
+        }
         await supabase.auth.signOut();
         setProfile(null);
     };
@@ -116,6 +143,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             profile,
             session,
             loading,
+            isConfigured: isAuthConfigured,
             signIn,
             signUp,
             signOut,

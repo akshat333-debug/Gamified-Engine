@@ -25,6 +25,12 @@ class Base(DeclarativeBase):
     pass
 
 
+async def init_db():
+    """Initialize database - tables created via SQL schema in Supabase."""
+    # Tables are created manually via database/schema.sql in Supabase SQL Editor
+    pass
+
+
 async def get_db() -> AsyncSession:
     """Dependency for FastAPI routes to get database session."""
     async with async_session() as session:
