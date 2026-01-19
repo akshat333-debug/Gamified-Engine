@@ -1,7 +1,10 @@
 """
 AI Service - Orchestrates AI calls for problem refinement, stakeholder suggestions, and indicator generation
+Enhanced with retry logic and Indian education context (NIPUN Bharat, NEP 2020)
 """
 import json
+import asyncio
+import time
 from typing import Optional
 from app.config import get_settings
 from app.schemas import (
@@ -12,29 +15,48 @@ from app.schemas import (
     GeneratedIndicator
 )
 
+# Retry configuration
+MAX_RETRIES = 3
+BASE_DELAY = 1  # seconds
+MAX_DELAY = 30  # seconds
+
 settings = get_settings()
 
 # System prompts for different AI tasks
 SYSTEM_PROMPTS = {
-    "refine_problem": """You are an M&E (Monitoring and Evaluation) Expert for Education NGOs. 
+    "refine_problem": """You are an M&E (Monitoring and Evaluation) Expert for Education NGOs in India.
 Your task is to take a vague challenge statement and restructure it into a clear Root Cause Analysis format.
 
+CONTEXT: Apply knowledge of Indian education policies including:
+- NIPUN Bharat (National Initiative for Proficiency in Reading with Understanding and Numeracy)
+- NEP 2020 (National Education Policy)
+- Foundational Literacy and Numeracy (FLN) benchmarks for Grades 1-3
+- ASER assessment standards
+
 When given a challenge statement, you must:
-1. Clarify the core problem
-2. Identify 3-5 root causes
+1. Clarify the core problem with specific grade levels and regions if mentioned
+2. Identify 3-5 root causes considering Indian educational context
 3. Suggest the most appropriate theme from: FLN (Foundational Literacy & Numeracy), Career Readiness, STEM, Life Skills, or Other
 
 Respond in JSON format:
 {
-    "refined_text": "A clear, structured version of the challenge",
+    "refined_text": "A clear, structured version of the challenge with context",
     "root_causes": ["cause1", "cause2", "cause3"],
     "suggested_theme": "FLN"
 }""",
 
-    "suggest_stakeholders": """You are an M&E Expert for Education NGOs.
+    "suggest_stakeholders": """You are an M&E Expert for Education NGOs in India.
 Based on the given problem statement, suggest relevant stakeholders who should be engaged in the program.
 
-Consider roles like: Teachers, Parents, Community Leaders, Government Officials, NGO Partners, Students, School Administrators, etc.
+Consider the Indian education ecosystem including:
+- School Management Committee (SMC) members
+- Anganwadi workers (for early childhood)
+- Block Education Officers (BEO)
+- Cluster Resource Coordinators (CRC)
+- Gram Panchayat representatives
+- Parents, Teachers, School Principals
+- State/District education officials
+- NGO implementation partners
 
 Respond in JSON format:
 {
@@ -48,16 +70,26 @@ Respond in JSON format:
     ]
 }
 
-Suggest 4-6 relevant stakeholders.""",
+Suggest 4-6 relevant stakeholders appropriate for the Indian context.""",
 
-    "generate_indicators": """You are an M&E (Monitoring and Evaluation) Expert for Education NGOs.
+    "generate_indicators": """You are an M&E (Monitoring and Evaluation) Expert for Education NGOs in India.
 When given a Challenge Statement, generate indicators that follow the SMART framework (Specific, Measurable, Achievable, Relevant, Time-bound).
 
-IMPORTANT THEME-SPECIFIC GUIDANCE:
-- If the theme is 'FLN' (Foundational Literacy & Numeracy), focus on NIPUN Bharat standards
-- If the theme is 'Career Readiness', focus on agency, decision-making skills, and employability
-- If the theme is 'STEM', focus on problem-solving, scientific thinking, and practical application
-- If the theme is 'Life Skills', focus on social-emotional learning and behavioral outcomes
+IMPORTANT THEME-SPECIFIC GUIDANCE WITH INDIAN CONTEXT:
+- If theme is 'FLN': 
+  * Use NIPUN Bharat competency standards (NIPUN 3 goals by Grade 3)
+  * Reference ASER tools for assessment
+  * Include reading fluency (ORF - Oral Reading Fluency), comprehension, and numeracy
+  * Align with state FLN Mission targets
+- If theme is 'Career Readiness':
+  * Focus on agency, self-efficacy, decision-making per NEP 2020
+  * Include vocational awareness and skill development
+- If theme is 'STEM':
+  * Align with NCF 2023 competencies
+  * Focus on scientific temper and problem-solving
+- If theme is 'Life Skills':
+  * Include social-emotional learning (SEL)
+  * Reference CBSE/state board life skills curriculum
 
 Generate BOTH outcome indicators (measuring change/impact) and output indicators (measuring activities).
 
@@ -66,15 +98,15 @@ Respond in JSON format:
     "indicators": [
         {
             "type": "outcome",
-            "description": "Percentage of students accurately reading and comprehending Grade 2 level text",
-            "measurement_method": "Standardized reading assessment (ASER/NIPUN tools)",
+            "description": "Percentage of Grade 3 students achieving NIPUN benchmark (45 words/min ORF)",
+            "measurement_method": "ASER/NIPUN standardized reading assessment",
             "target_value": "75% of students achieve benchmark",
             "frequency": "Quarterly",
             "data_source": "Student assessments"
         },
         {
             "type": "output",
-            "description": "Number of remedial sessions conducted per week",
+            "description": "Number of TaRL remedial sessions conducted per week",
             "measurement_method": "Session attendance logs",
             "target_value": "5 sessions per week per group",
             "frequency": "Weekly",

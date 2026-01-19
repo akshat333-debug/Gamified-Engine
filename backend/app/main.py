@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
-from app.routers import programs_router, ai_router, export_router
+from app.routers import programs_router, ai_router, export_router, gamification_router
 
 settings = get_settings()
 
@@ -42,6 +42,7 @@ app.add_middleware(
 app.include_router(programs_router)
 app.include_router(ai_router)
 app.include_router(export_router)
+app.include_router(gamification_router)
 
 
 @app.get("/")
@@ -70,6 +71,7 @@ async def api_info():
         "endpoints": {
             "programs": "/api/programs",
             "ai": "/api/ai",
-            "export": "/api/export"
+            "export": "/api/export",
+            "gamification": "/api/gamification"
         }
     }

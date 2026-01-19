@@ -33,10 +33,17 @@ export default function RootLayout({
             </a>
             <nav className="flex items-center gap-6">
               <a href="/" className="text-gray-600 hover:text-indigo-600 transition-colors">
-                Dashboard
+                Programs
               </a>
-              <a href="/about" className="text-gray-600 hover:text-indigo-600 transition-colors">
-                About
+              <a href="/dashboard" className="text-gray-600 hover:text-indigo-600 transition-colors">
+                📊 Analytics
+              </a>
+              <div className="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-indigo-100 to-purple-100 rounded-full">
+                <span className="text-sm font-medium text-indigo-700">850 XP</span>
+                <span className="text-xs text-indigo-500">Lvl 2</span>
+              </div>
+              <a href="/login" className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-shadow text-sm font-medium">
+                Sign In
               </a>
             </nav>
           </div>
