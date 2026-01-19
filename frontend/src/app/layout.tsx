@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "./providers";
+import Header from "@/components/Header";
 
 export const metadata: Metadata = {
   title: "LogicForge - AI-Powered Programme Design",
@@ -24,32 +25,8 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased bg-gray-50 text-gray-900">
         <Providers>
-          {/* Header */}
-          <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
-            <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-              <a href="/" className="flex items-center gap-2">
-                <span className="text-2xl">🔮</span>
-                <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                  LogicForge
-                </span>
-              </a>
-              <nav className="flex items-center gap-6">
-                <a href="/" className="text-gray-600 hover:text-indigo-600 transition-colors">
-                  Programs
-                </a>
-                <a href="/dashboard" className="text-gray-600 hover:text-indigo-600 transition-colors">
-                  📊 Analytics
-                </a>
-                <div className="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-indigo-100 to-purple-100 rounded-full">
-                  <span className="text-sm font-medium text-indigo-700">850 XP</span>
-                  <span className="text-xs text-indigo-500">Lvl 2</span>
-                </div>
-                <a href="/login" className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-shadow text-sm font-medium">
-                  Sign In
-                </a>
-              </nav>
-            </div>
-          </header>
+          {/* Dynamic Header with Auth State */}
+          <Header />
 
           {/* Main Content */}
           <main className="min-h-screen">
