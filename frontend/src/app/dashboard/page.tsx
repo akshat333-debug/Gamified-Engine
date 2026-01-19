@@ -1,7 +1,12 @@
 'use client';
 
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useAuth } from '@/contexts/AuthContext';
+import { Program } from '@/types';
+import api from '@/lib/api';
 import XPBar from '@/components/XPBar';
 import Leaderboard from '@/components/Leaderboard';
 import StreakDisplay from '@/components/StreakDisplay';
@@ -9,17 +14,67 @@ import ProgramStatusChart from '@/components/charts/ProgramStatusChart';
 import ProgressTimeline from '@/components/charts/ProgressTimeline';
 import StakeholderChart from '@/components/charts/StakeholderChart';
 
-// Mock user stats (would come from auth context in production)
-const USER_STATS = {
-    xp: 850,
-    level: 2,
-    streak: 5,
-    longestStreak: 12,
-    programsCompleted: 3,
-    programsInProgress: 2,
-};
-
 export default function DashboardPage() {
+    const { user, profile, loading: authLoading } = useAuth();
+    const router = useRouter();
+    const [programs, setPrograms] = useState<Program[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (!authLoading) {
+            if (!user) {
+                // Redirect to login if not authenticated
+                router.push('/login');
+                return;
+            }
+            loadUserData();
+        }
+    }, [authLoading, user]);
+
+    const loadUserData = async () => {
+        try {
+            // Load user's programs
+            const userPrograms = await api.listPrograms(user?.id);
+            setPrograms(userPrograms);
+        } catch (error) {
+            console.error('Failed to load user data:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Calculate user-specific stats from their programs
+    const userStats = {
+        xp: profile?.total_xp || 0,
+        level: profile?.level || 1,
+        streak: profile?.current_streak || 0,
+        longestStreak: 0, // Would come from backend
+        programsCompleted: programs.filter(p => p.status === 'completed').length,
+        programsInProgress: programs.filter(p => p.status === 'in_progress').length,
+        programsDraft: programs.filter(p => p.status === 'draft').length,
+    };
+
+    // Generate chart data from user's programs
+    const programStatusData = [
+        { name: 'Completed', value: userStats.programsCompleted, color: '#10b981' },
+        { name: 'In Progress', value: userStats.programsInProgress, color: '#6366f1' },
+        { name: 'Draft', value: userStats.programsDraft, color: '#9ca3af' },
+    ].filter(item => item.value > 0);
+
+    // Show loading while auth is checking
+    if (authLoading || loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-indigo-50">
+                <div className="animate-spin h-8 w-8 border-4 border-indigo-500 border-t-transparent rounded-full"></div>
+            </div>
+        );
+    }
+
+    // Redirect if not logged in
+    if (!user) {
+        return null;
+    }
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50">
             {/* Header */}
@@ -27,8 +82,10 @@ export default function DashboardPage() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                     <div className="flex justify-between items-center">
                         <div>
-                            <h1 className="text-2xl font-bold text-gray-900">📊 Analytics Dashboard</h1>
-                            <p className="text-gray-500 text-sm">Track your progress and achievements</p>
+                            <h1 className="text-2xl font-bold text-gray-900">
+                                📊 {profile?.full_name || 'Your'} Analytics
+                            </h1>
+                            <p className="text-gray-500 text-sm">Track your personal progress and achievements</p>
                         </div>
                         <Link
                             href="/"
@@ -49,7 +106,7 @@ export default function DashboardPage() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
                     >
-                        <XPBar currentXP={USER_STATS.xp} level={USER_STATS.level} />
+                        <XPBar currentXP={userStats.xp} level={userStats.level} />
                     </motion.div>
 
                     {/* Streak */}
@@ -59,8 +116,8 @@ export default function DashboardPage() {
                         transition={{ delay: 0.2 }}
                     >
                         <StreakDisplay
-                            currentStreak={USER_STATS.streak}
-                            longestStreak={USER_STATS.longestStreak}
+                            currentStreak={userStats.streak}
+                            longestStreak={userStats.longestStreak}
                         />
                     </motion.div>
 
@@ -71,61 +128,85 @@ export default function DashboardPage() {
                         transition={{ delay: 0.3 }}
                         className="bg-white rounded-xl p-4 shadow-lg border border-gray-100"
                     >
-                        <h3 className="text-gray-500 text-sm mb-3">Quick Stats</h3>
-                        <div className="grid grid-cols-2 gap-4">
+                        <h3 className="text-gray-500 text-sm mb-3">Your Programs</h3>
+                        <div className="grid grid-cols-3 gap-4">
                             <div>
-                                <div className="text-3xl font-bold text-indigo-600">
-                                    {USER_STATS.programsCompleted}
+                                <div className="text-3xl font-bold text-green-600">
+                                    {userStats.programsCompleted}
                                 </div>
                                 <div className="text-sm text-gray-500">Completed</div>
                             </div>
                             <div>
-                                <div className="text-3xl font-bold text-amber-500">
-                                    {USER_STATS.programsInProgress}
+                                <div className="text-3xl font-bold text-indigo-600">
+                                    {userStats.programsInProgress}
                                 </div>
-                                <div className="text-sm text-gray-500">In Progress</div>
+                                <div className="text-sm text-gray-500">Active</div>
+                            </div>
+                            <div>
+                                <div className="text-3xl font-bold text-gray-400">
+                                    {userStats.programsDraft}
+                                </div>
+                                <div className="text-sm text-gray-500">Drafts</div>
                             </div>
                         </div>
                     </motion.div>
                 </div>
 
-                {/* Charts Row */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                {/* No programs message */}
+                {programs.length === 0 ? (
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.4 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="text-center py-16 bg-white rounded-2xl border-2 border-dashed border-gray-200"
                     >
-                        <ProgramStatusChart />
+                        <div className="text-6xl mb-4">📊</div>
+                        <h3 className="text-xl font-semibold text-gray-700 mb-2">No analytics yet</h3>
+                        <p className="text-gray-500 mb-6">Create your first program to start tracking progress!</p>
+                        <Link href="/" className="btn-primary">
+                            Create Your First Program
+                        </Link>
                     </motion.div>
+                ) : (
+                    <>
+                        {/* Charts Row */}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.4 }}
+                            >
+                                <ProgramStatusChart data={programStatusData.length > 0 ? programStatusData : undefined} />
+                            </motion.div>
 
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.5 }}
-                    >
-                        <ProgressTimeline />
-                    </motion.div>
-                </div>
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.5 }}
+                            >
+                                <ProgressTimeline />
+                            </motion.div>
+                        </div>
 
-                {/* Bottom Row */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.6 }}
-                    >
-                        <StakeholderChart />
-                    </motion.div>
+                        {/* Bottom Row */}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.6 }}
+                            >
+                                <StakeholderChart />
+                            </motion.div>
 
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.7 }}
-                    >
-                        <Leaderboard entries={[]} />
-                    </motion.div>
-                </div>
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.7 }}
+                            >
+                                <Leaderboard entries={[]} />
+                            </motion.div>
+                        </div>
+                    </>
+                )}
 
                 {/* Achievement Section */}
                 <motion.div
@@ -137,11 +218,11 @@ export default function DashboardPage() {
                     <h3 className="text-xl font-bold mb-4">🏆 Your Badges</h3>
                     <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
                         {[
-                            { icon: '🔍', name: 'Problem Explorer', earned: true },
-                            { icon: '🤝', name: 'Stakeholder Mapper', earned: true },
-                            { icon: '📚', name: 'Evidence Seeker', earned: true },
-                            { icon: '📊', name: 'Indicator Architect', earned: false },
-                            { icon: '🏆', name: 'Program Designer', earned: false },
+                            { icon: '🔍', name: 'Problem Explorer', earned: userStats.programsCompleted >= 1 || userStats.programsInProgress >= 1 },
+                            { icon: '🤝', name: 'Stakeholder Mapper', earned: userStats.programsCompleted >= 1 },
+                            { icon: '📚', name: 'Evidence Seeker', earned: userStats.programsCompleted >= 2 },
+                            { icon: '📊', name: 'Indicator Architect', earned: userStats.programsCompleted >= 3 },
+                            { icon: '🏆', name: 'Program Designer', earned: userStats.programsCompleted >= 5 },
                         ].map((badge, index) => (
                             <div
                                 key={index}
