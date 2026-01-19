@@ -139,8 +139,8 @@ export default function BenchmarksPage() {
                                     key={grade}
                                     onClick={() => setSelectedGrade(grade)}
                                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${selectedGrade === grade
-                                            ? 'bg-indigo-600 text-white'
-                                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                        ? 'bg-indigo-600 text-white'
+                                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                         }`}
                                 >
                                     {grade.replace('_', ' ').toUpperCase()}
@@ -242,7 +242,7 @@ export default function BenchmarksPage() {
 
                     <div className="h-80">
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={filteredStates.sort((a, b) => b.fln_proficiency - a.fln_proficiency)} layout="vertical">
+                            <BarChart data={[...filteredStates].sort((a, b) => b.fln_proficiency - a.fln_proficiency)} layout="vertical">
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis type="number" domain={[0, 100]} />
                                 <YAxis dataKey="state" type="category" width={100} />
