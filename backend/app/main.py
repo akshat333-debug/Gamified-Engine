@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
-from app.routers import programs_router, ai_router, export_router, gamification_router
+from app.routers import programs_router, ai_router, export_router, gamification_router, benchmarks_router, activities_router, forms_router
 from app.database import init_db
 
 settings = get_settings()
@@ -46,6 +46,9 @@ app.include_router(programs_router)
 app.include_router(ai_router)
 app.include_router(export_router)
 app.include_router(gamification_router)
+app.include_router(benchmarks_router)
+app.include_router(activities_router)
+app.include_router(forms_router)
 
 
 @app.get("/")

@@ -3,5 +3,11 @@ from app.routers.programs import router as programs_router
 from app.routers.ai import router as ai_router
 from app.routers.export import router as export_router
 from app.routers.gamification import router as gamification_router
+from app.routers.benchmarks import router as benchmarks_router
+from app.routers.activities import router as activities_router
+from app.routers.forms import router as forms_router
 
-__all__ = ["programs_router", "ai_router", "export_router", "gamification_router"]
+__all__ = [
+    "programs_router", "ai_router", "export_router", 
+    "gamification_router", "benchmarks_router", "activities_router", "forms_router"
+]

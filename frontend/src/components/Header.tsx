@@ -14,11 +14,23 @@ export default function Header() {
                         LogicForge
                     </span>
                 </a>
-                <nav className="flex items-center gap-6">
-                    <a href="/" className="text-gray-600 hover:text-indigo-600 transition-colors">
+                <nav className="flex items-center gap-4">
+                    <a href="/" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
                         Programs
                     </a>
-                    <a href="/dashboard" className="text-gray-600 hover:text-indigo-600 transition-colors">
+                    <a href="/toc-builder" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
+                        🔗 ToC Builder
+                    </a>
+                    <a href="/benchmarks" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
+                        📚 Benchmarks
+                    </a>
+                    <a href="/activities" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
+                        📅 Activities
+                    </a>
+                    <a href="/forms" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
+                        📝 Forms
+                    </a>
+                    <a href="/dashboard" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
                         📊 Analytics
                     </a>
 

@@ -1,0 +1,215 @@
+{
+    "nipun_bharat": {
+        "title": "NIPUN Bharat FLN Benchmarks",
+        "description": "National Initiative for Proficiency in Reading with Understanding and Numeracy",
+        "grades": {
+            "grade_1": {
+                "reading": {
+                    "oral_reading_fluency": "15-20 words per minute",
+                    "comprehension": "Answer 2 out of 3 simple questions",
+                    "phonics": "Identify all consonants and vowels"
+                },
+                "numeracy": {
+                    "number_recognition": "1-99",
+                    "addition": "Single digit without regrouping",
+                    "subtraction": "Single digit"
+                }
+            },
+            "grade_2": {
+                "reading": {
+                    "oral_reading_fluency": "35-40 words per minute",
+                    "comprehension": "Answer 3 out of 5 questions",
+                    "phonics": "Read words with matras"
+                },
+                "numeracy": {
+                    "number_recognition": "1-999",
+                    "addition": "Two digit with regrouping",
+                    "subtraction": "Two digit with borrowing",
+                    "multiplication": "Tables 2-5"
+                }
+            },
+            "grade_3": {
+                "reading": {
+                    "oral_reading_fluency": "60+ words per minute",
+                    "comprehension": "Answer 4 out of 5 questions with inference",
+                    "writing": "Write 5-6 sentences on familiar topics"
+                },
+                "numeracy": {
+                    "number_recognition": "1-9999",
+                    "addition": "Three digit with regrouping",
+                    "subtraction": "Three digit with borrowing",
+                    "multiplication": "Tables 2-10",
+                    "division": "Simple division"
+                }
+            }
+        }
+    },
+    "state_statistics": [
+        {
+            "state": "Bihar",
+            "literacy_rate": 61.8,
+            "fln_proficiency": 42,
+            "enrollment_rate": 96.2,
+            "dropout_rate": 4.8,
+            "region": "East"
+        },
+        {
+            "state": "Uttar Pradesh",
+            "literacy_rate": 67.7,
+            "fln_proficiency": 45,
+            "enrollment_rate": 97.1,
+            "dropout_rate": 5.2,
+            "region": "North"
+        },
+        {
+            "state": "Maharashtra",
+            "literacy_rate": 82.3,
+            "fln_proficiency": 68,
+            "enrollment_rate": 98.5,
+            "dropout_rate": 2.1,
+            "region": "West"
+        },
+        {
+            "state": "Tamil Nadu",
+            "literacy_rate": 80.1,
+            "fln_proficiency": 72,
+            "enrollment_rate": 99.1,
+            "dropout_rate": 1.5,
+            "region": "South"
+        },
+        {
+            "state": "Kerala",
+            "literacy_rate": 94.0,
+            "fln_proficiency": 89,
+            "enrollment_rate": 99.8,
+            "dropout_rate": 0.5,
+            "region": "South"
+        },
+        {
+            "state": "Rajasthan",
+            "literacy_rate": 66.1,
+            "fln_proficiency": 38,
+            "enrollment_rate": 95.8,
+            "dropout_rate": 6.1,
+            "region": "North"
+        },
+        {
+            "state": "Gujarat",
+            "literacy_rate": 78.0,
+            "fln_proficiency": 58,
+            "enrollment_rate": 97.8,
+            "dropout_rate": 3.2,
+            "region": "West"
+        },
+        {
+            "state": "Madhya Pradesh",
+            "literacy_rate": 69.3,
+            "fln_proficiency": 44,
+            "enrollment_rate": 96.5,
+            "dropout_rate": 5.5,
+            "region": "Central"
+        },
+        {
+            "state": "Karnataka",
+            "literacy_rate": 75.4,
+            "fln_proficiency": 62,
+            "enrollment_rate": 98.2,
+            "dropout_rate": 2.8,
+            "region": "South"
+        },
+        {
+            "state": "West Bengal",
+            "literacy_rate": 76.3,
+            "fln_proficiency": 55,
+            "enrollment_rate": 97.5,
+            "dropout_rate": 3.5,
+            "region": "East"
+        },
+        {
+            "state": "Odisha",
+            "literacy_rate": 72.9,
+            "fln_proficiency": 48,
+            "enrollment_rate": 96.8,
+            "dropout_rate": 4.2,
+            "region": "East"
+        },
+        {
+            "state": "Jharkhand",
+            "literacy_rate": 66.4,
+            "fln_proficiency": 40,
+            "enrollment_rate": 95.5,
+            "dropout_rate": 5.8,
+            "region": "East"
+        },
+        {
+            "state": "Punjab",
+            "literacy_rate": 75.8,
+            "fln_proficiency": 64,
+            "enrollment_rate": 98.0,
+            "dropout_rate": 2.5,
+            "region": "North"
+        },
+        {
+            "state": "Haryana",
+            "literacy_rate": 75.6,
+            "fln_proficiency": 60,
+            "enrollment_rate": 97.6,
+            "dropout_rate": 3.0,
+            "region": "North"
+        },
+        {
+            "state": "Delhi",
+            "literacy_rate": 86.2,
+            "fln_proficiency": 75,
+            "enrollment_rate": 99.0,
+            "dropout_rate": 1.2,
+            "region": "North"
+        }
+    ],
+    "national_averages": {
+        "literacy_rate": 74.04,
+        "fln_proficiency": 55,
+        "enrollment_rate": 97.2,
+        "dropout_rate": 3.5,
+        "pupil_teacher_ratio": 26,
+        "schools_with_electricity": 83.4,
+        "schools_with_computers": 38.5
+    },
+    "fln_indicators": [
+        {
+            "indicator": "Oral Reading Fluency",
+            "unit": "words per minute",
+            "grade_1": 15,
+            "grade_2": 35,
+            "grade_3": 60
+        },
+        {
+            "indicator": "Reading Comprehension",
+            "unit": "% correct",
+            "grade_1": 60,
+            "grade_2": 70,
+            "grade_3": 80
+        },
+        {
+            "indicator": "Number Recognition",
+            "unit": "max number",
+            "grade_1": 99,
+            "grade_2": 999,
+            "grade_3": 9999
+        },
+        {
+            "indicator": "Addition Proficiency",
+            "unit": "% correct",
+            "grade_1": 70,
+            "grade_2": 75,
+            "grade_3": 80
+        },
+        {
+            "indicator": "Subtraction Proficiency",
+            "unit": "% correct",
+            "grade_1": 65,
+            "grade_2": 70,
+            "grade_3": 75
+        }
+    ]
+}
