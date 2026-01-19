@@ -10,13 +10,18 @@ body {
 
 /* Custom Animations */
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 .animate-shimmer {
   animation: shimmer 2s linear infinite;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   background-size: 200% 100%;
 }
 
@@ -99,11 +104,18 @@ body {
 /* Input Styles */
 .input-field {
   width: 100%;
+  min-width: 200px;
   padding: 0.75rem 1rem;
   border: 2px solid #e2e8f0;
   border-radius: 0.75rem;
   transition: all 0.3s ease;
   background: white;
+  color: #1f2937;
+  font-size: 1rem;
+}
+
+.input-field::placeholder {
+  color: #9ca3af;
 }
 
 .input-field:focus {
