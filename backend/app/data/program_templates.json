@@ -1,0 +1,368 @@
+{
+    "templates": [
+        {
+            "id": "fln-basic",
+            "name": "FLN Improvement Program",
+            "description": "Foundational Literacy and Numeracy program aligned with NIPUN Bharat guidelines",
+            "theme": "FLN",
+            "difficulty": "beginner",
+            "duration": "12 months",
+            "target_beneficiaries": "Grade 1-3 students",
+            "problem_statement": {
+                "challenge_text": "Students in government schools are not achieving grade-level proficiency in reading and basic math by Grade 3",
+                "root_causes": [
+                    "Lack of structured foundational learning approach",
+                    "Teachers not trained in FLN pedagogy",
+                    "No regular assessment of learning levels",
+                    "Limited learning materials for early grades"
+                ],
+                "theme": "FLN"
+            },
+            "stakeholders": [
+                {
+                    "name": "School Teachers",
+                    "role": "Primary implementers",
+                    "priority": "high"
+                },
+                {
+                    "name": "Block Education Officers",
+                    "role": "Supervision and support",
+                    "priority": "high"
+                },
+                {
+                    "name": "Parents",
+                    "role": "Home learning support",
+                    "priority": "medium"
+                },
+                {
+                    "name": "Anganwadi Workers",
+                    "role": "Pre-school readiness",
+                    "priority": "medium"
+                }
+            ],
+            "outcomes": [
+                {
+                    "description": "Improved oral reading fluency among Grade 1-3 students",
+                    "indicators": [
+                        {
+                            "type": "outcome",
+                            "description": "% of Grade 3 students reading at 60+ WPM",
+                            "target_value": "70%"
+                        },
+                        {
+                            "type": "output",
+                            "description": "Number of reading camps conducted",
+                            "target_value": "100"
+                        }
+                    ]
+                },
+                {
+                    "description": "Enhanced numeracy skills among early grade students",
+                    "indicators": [
+                        {
+                            "type": "outcome",
+                            "description": "% of students demonstrating grade-level numeracy",
+                            "target_value": "65%"
+                        },
+                        {
+                            "type": "output",
+                            "description": "Number of teachers trained in math pedagogy",
+                            "target_value": "200"
+                        }
+                    ]
+                }
+            ],
+            "activities": [
+                {
+                    "title": "Teacher Training on FLN Pedagogy",
+                    "duration": "1 month"
+                },
+                {
+                    "title": "Learning Material Development",
+                    "duration": "2 months"
+                },
+                {
+                    "title": "Reading Camps Implementation",
+                    "duration": "6 months"
+                },
+                {
+                    "title": "Parent Engagement Sessions",
+                    "duration": "ongoing"
+                }
+            ]
+        },
+        {
+            "id": "career-readiness",
+            "name": "Career Readiness Program",
+            "description": "Skill development and career guidance for secondary and higher secondary students",
+            "theme": "Career Readiness",
+            "difficulty": "intermediate",
+            "duration": "18 months",
+            "target_beneficiaries": "Grade 9-12 students",
+            "problem_statement": {
+                "challenge_text": "Students graduating from schools lack job-ready skills and career awareness",
+                "root_causes": [
+                    "No structured career guidance in schools",
+                    "Gap between academic curriculum and industry needs",
+                    "Limited exposure to various career options",
+                    "Lack of soft skills training"
+                ],
+                "theme": "Career Readiness"
+            },
+            "stakeholders": [
+                {
+                    "name": "School Counselors",
+                    "role": "Career guidance delivery",
+                    "priority": "high"
+                },
+                {
+                    "name": "Industry Partners",
+                    "role": "Internship and exposure",
+                    "priority": "high"
+                },
+                {
+                    "name": "District Education Department",
+                    "role": "Policy support",
+                    "priority": "medium"
+                },
+                {
+                    "name": "Local Employers",
+                    "role": "Job placement",
+                    "priority": "medium"
+                }
+            ],
+            "outcomes": [
+                {
+                    "description": "Students have clarity on career paths",
+                    "indicators": [
+                        {
+                            "type": "outcome",
+                            "description": "% of students with documented career plan",
+                            "target_value": "80%"
+                        },
+                        {
+                            "type": "output",
+                            "description": "Number of career counseling sessions conducted",
+                            "target_value": "500"
+                        }
+                    ]
+                },
+                {
+                    "description": "Improved employability skills",
+                    "indicators": [
+                        {
+                            "type": "outcome",
+                            "description": "% improvement in soft skills assessment",
+                            "target_value": "40%"
+                        },
+                        {
+                            "type": "output",
+                            "description": "Number of students completing skill courses",
+                            "target_value": "1000"
+                        }
+                    ]
+                }
+            ],
+            "activities": [
+                {
+                    "title": "Career Assessment and Counseling",
+                    "duration": "3 months"
+                },
+                {
+                    "title": "Soft Skills Training Workshops",
+                    "duration": "6 months"
+                },
+                {
+                    "title": "Industry Exposure Visits",
+                    "duration": "ongoing"
+                },
+                {
+                    "title": "Internship Program",
+                    "duration": "3 months"
+                }
+            ]
+        },
+        {
+            "id": "life-skills",
+            "name": "Life Skills Education Program",
+            "description": "Comprehensive life skills program covering social-emotional learning, health, and safety",
+            "theme": "Life Skills",
+            "difficulty": "beginner",
+            "duration": "12 months",
+            "target_beneficiaries": "Grade 6-10 students",
+            "problem_statement": {
+                "challenge_text": "Adolescents lack critical life skills needed for navigating personal and social challenges",
+                "root_causes": [
+                    "No structured life skills curriculum in schools",
+                    "Teachers not equipped to deliver SEL content",
+                    "Stigma around discussing health and safety topics",
+                    "Limited parent involvement in adolescent development"
+                ],
+                "theme": "Life Skills"
+            },
+            "stakeholders": [
+                {
+                    "name": "Trained Facilitators",
+                    "role": "Life skills session delivery",
+                    "priority": "high"
+                },
+                {
+                    "name": "School Management",
+                    "role": "Time allocation and support",
+                    "priority": "high"
+                },
+                {
+                    "name": "Health Department",
+                    "role": "Health education resources",
+                    "priority": "medium"
+                },
+                {
+                    "name": "NGO Partners",
+                    "role": "Content and expertise",
+                    "priority": "medium"
+                }
+            ],
+            "outcomes": [
+                {
+                    "description": "Improved self-awareness and emotional regulation",
+                    "indicators": [
+                        {
+                            "type": "outcome",
+                            "description": "% improvement in SEL assessment scores",
+                            "target_value": "35%"
+                        },
+                        {
+                            "type": "output",
+                            "description": "Number of life skills sessions conducted",
+                            "target_value": "200"
+                        }
+                    ]
+                },
+                {
+                    "description": "Better decision-making and problem-solving abilities",
+                    "indicators": [
+                        {
+                            "type": "outcome",
+                            "description": "% of students demonstrating improved decision-making",
+                            "target_value": "50%"
+                        },
+                        {
+                            "type": "output",
+                            "description": "Number of peer educators trained",
+                            "target_value": "100"
+                        }
+                    ]
+                }
+            ],
+            "activities": [
+                {
+                    "title": "Facilitator Training",
+                    "duration": "1 month"
+                },
+                {
+                    "title": "Weekly Life Skills Sessions",
+                    "duration": "10 months"
+                },
+                {
+                    "title": "Peer Educator Program",
+                    "duration": "6 months"
+                },
+                {
+                    "title": "Parent Awareness Workshops",
+                    "duration": "quarterly"
+                }
+            ]
+        },
+        {
+            "id": "stem-education",
+            "name": "STEM Excellence Program",
+            "description": "Science, Technology, Engineering, and Math enrichment program",
+            "theme": "STEM",
+            "difficulty": "advanced",
+            "duration": "24 months",
+            "target_beneficiaries": "Grade 6-12 students",
+            "problem_statement": {
+                "challenge_text": "Students lack interest and proficiency in STEM subjects due to rote learning methods",
+                "root_causes": [
+                    "Lack of hands-on, experiential learning",
+                    "Inadequate lab facilities and equipment",
+                    "Teachers need training in inquiry-based methods",
+                    "No connection between STEM and real-world applications"
+                ],
+                "theme": "STEM"
+            },
+            "stakeholders": [
+                {
+                    "name": "STEM Teachers",
+                    "role": "Curriculum delivery",
+                    "priority": "high"
+                },
+                {
+                    "name": "Tinkering Lab Mentors",
+                    "role": "Project guidance",
+                    "priority": "high"
+                },
+                {
+                    "name": "Industry Experts",
+                    "role": "Real-world exposure",
+                    "priority": "medium"
+                },
+                {
+                    "name": "Science Museums",
+                    "role": "Field learning",
+                    "priority": "low"
+                }
+            ],
+            "outcomes": [
+                {
+                    "description": "Increased interest and performance in STEM subjects",
+                    "indicators": [
+                        {
+                            "type": "outcome",
+                            "description": "% improvement in science/math scores",
+                            "target_value": "25%"
+                        },
+                        {
+                            "type": "output",
+                            "description": "Number of STEM projects completed by students",
+                            "target_value": "500"
+                        }
+                    ]
+                },
+                {
+                    "description": "Students develop innovation and problem-solving mindset",
+                    "indicators": [
+                        {
+                            "type": "outcome",
+                            "description": "Number of students participating in science fairs",
+                            "target_value": "300"
+                        },
+                        {
+                            "type": "output",
+                            "description": "Number of tinkering labs established",
+                            "target_value": "20"
+                        }
+                    ]
+                }
+            ],
+            "activities": [
+                {
+                    "title": "Tinkering Lab Setup",
+                    "duration": "3 months"
+                },
+                {
+                    "title": "Teacher Training on Hands-on STEM",
+                    "duration": "2 months"
+                },
+                {
+                    "title": "Weekly STEM Club Sessions",
+                    "duration": "ongoing"
+                },
+                {
+                    "title": "Inter-school Science Fair",
+                    "duration": "annual"
+                }
+            ]
+        }
+    ]
+}
