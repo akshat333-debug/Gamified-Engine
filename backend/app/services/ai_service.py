@@ -120,27 +120,50 @@ Generate 3-4 outcome indicators and 2-3 output indicators."""
 
 
 class AIService:
-    """Service for AI-powered features using OpenAI or Google Gemini."""
+    """Service for AI-powered features using OpenAI, Groq, or Google Gemini."""
     
     def __init__(self):
         self.openai_client = None
         self.gemini_client = None
+        self.groq_client = None
+        self.active_provider = None
         self._initialize_client()
     
     def _initialize_client(self):
         """Initialize the AI client based on available API keys."""
-        if settings.openai_api_key:
+        if settings.groq_api_key:
+            from openai import OpenAI
+            self.groq_client = OpenAI(
+                api_key=settings.groq_api_key,
+                base_url="https://api.groq.com/openai/v1"
+            )
+            self.active_provider = "groq"
+        elif settings.openai_api_key:
             from openai import OpenAI
             self.openai_client = OpenAI(api_key=settings.openai_api_key)
+            self.active_provider = "openai"
         elif settings.google_api_key:
             from google import genai
             self.gemini_client = genai.Client(api_key=settings.google_api_key)
+            self.active_provider = "gemini"
         else:
-            raise ValueError("No AI API key configured. Set OPENAI_API_KEY or GOOGLE_API_KEY.")
+            raise ValueError("No AI API key configured. Set GROQ_API_KEY, OPENAI_API_KEY, or GOOGLE_API_KEY.")
     
     async def _call_ai(self, system_prompt: str, user_prompt: str) -> str:
         """Make an AI API call and return the response."""
-        if self.openai_client:
+        if self.groq_client:
+            response = self.groq_client.chat.completions.create(
+                model="llama-3.3-70b-versatile",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt}
+                ],
+                response_format={"type": "json_object"},
+                temperature=0.7,
+                max_tokens=2000
+            )
+            return response.choices[0].message.content
+        elif self.openai_client:
             response = self.openai_client.chat.completions.create(
                 model="gpt-4-turbo-preview",
                 messages=[
@@ -287,7 +310,7 @@ class AIService:
 
 
 # Singleton instance
-ai_service = AIService() if (settings.openai_api_key or settings.google_api_key) else None
+ai_service = AIService() if (settings.groq_api_key or settings.openai_api_key or settings.google_api_key) else None
 
 
 def get_ai_service() -> AIService:

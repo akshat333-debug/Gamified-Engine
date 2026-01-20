@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     # AI Providers
     openai_api_key: str | None = None
     google_api_key: str | None = None
+    groq_api_key: str | None = None
     
     # App Config
     app_env: str = "development"
