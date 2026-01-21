@@ -401,12 +401,6 @@ GamifiedEngine/
 
 ---
 
-## 📜 License
-
-MIT License - See [LICENSE](LICENSE) for details.
-
----
-
 ## 👨‍💻 Author
 
 **Akshat Agrawal**
@@ -414,6 +408,3 @@ MIT License - See [LICENSE](LICENSE) for details.
 - GitHub: [@akshat333-debug](https://github.com/akshat333-debug)
 - Repository: [Gamified-Engine](https://github.com/akshat333-debug/Gamified-Engine)
 
----
-
-Built with ❤️ for Indian Education NGOs
