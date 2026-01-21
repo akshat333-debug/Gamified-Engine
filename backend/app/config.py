@@ -24,10 +24,15 @@ class Settings(BaseSettings):
     def cors_origins_list(self) -> list[str]:
         return [origin.strip() for origin in self.cors_origins.split(",")]
     
-    def model_post_init(self, __context):
-        """Post-initialization to fix database URL for Render compatibility."""
-        if self.database_url and self.database_url.startswith("postgres://"):
-            self.database_url = self.database_url.replace("postgres://", "postgresql+asyncpg://", 1)
+    from pydantic import field_validator
+
+    @field_validator("database_url", mode="before")
+    @classmethod
+    def fix_database_url(cls, v: str) -> str:
+        """Fix database URL for Render and SQLAlchemy compatibility."""
+        if v and v.startswith("postgres://"):
+            return v.replace("postgres://", "postgresql+asyncpg://", 1)
+        return v
 
     
     class Config:
