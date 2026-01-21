@@ -27,10 +27,13 @@ import {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
+console.log('[API Client] Base URL:', API_BASE_URL);
+
 class ApiClient {
     private client: AxiosInstance;
 
     constructor() {
+        console.log('[API Client] Creating axios instance with baseURL:', API_BASE_URL);
         this.client = axios.create({
             baseURL: API_BASE_URL,
             headers: {
@@ -221,6 +224,20 @@ class ApiClient {
         const response = await this.client.get(`/api/export/${programId}/pdf`, {
             responseType: 'blob'
         });
+        return response.data;
+    }
+
+    // =====================================================
+    // Analytics
+    // =====================================================
+
+    async getProgressTimeline(userId: string): Promise<{ data: { date: string; programs: number; xp: number }[] }> {
+        const response = await this.client.get(`/api/analytics/${userId}/progress`);
+        return response.data;
+    }
+
+    async getStakeholderStats(userId: string): Promise<{ data: { category: string; high: number; medium: number; low: number }[] }> {
+        const response = await this.client.get(`/api/analytics/${userId}/stakeholders`);
         return response.data;
     }
 }

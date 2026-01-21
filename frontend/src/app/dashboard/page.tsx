@@ -19,29 +19,31 @@ export default function DashboardPage() {
     const router = useRouter();
     const [programs, setPrograms] = useState<Program[]>([]);
     const [loading, setLoading] = useState(true);
+    const [progressData, setProgressData] = useState<{ date: string; programs: number; xp: number }[]>([]);
+    const [stakeholderData, setStakeholderData] = useState<{ category: string; high: number; medium: number; low: number }[]>([]);
 
     useEffect(() => {
         if (!authLoading) {
             if (!user) {
-                // Redirect to login if not authenticated
                 router.push('/login');
                 return;
             }
-            loadUserData();
-        }
-    }, [authLoading, user]);
 
-    const loadUserData = async () => {
-        try {
             // Load user's programs
-            const userPrograms = await api.listPrograms(user?.id);
-            setPrograms(userPrograms);
-        } catch (error) {
-            console.error('Failed to load user data:', error);
-        } finally {
-            setLoading(false);
+            const loadData = async () => {
+                try {
+                    const userPrograms = await api.listPrograms(user?.id);
+                    setPrograms(userPrograms);
+                } catch (error) {
+                    console.error('Failed to load programs:', error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            loadData();
         }
-    };
+    }, [authLoading, user, router]);
 
     // Calculate user-specific stats from their programs
     const userStats = {
@@ -183,7 +185,7 @@ export default function DashboardPage() {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.5 }}
                             >
-                                <ProgressTimeline />
+                                <ProgressTimeline data={progressData.length > 0 ? progressData : undefined} />
                             </motion.div>
                         </div>
 
@@ -194,7 +196,7 @@ export default function DashboardPage() {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.6 }}
                             >
-                                <StakeholderChart />
+                                <StakeholderChart data={stakeholderData.length > 0 ? stakeholderData : undefined} />
                             </motion.div>
 
                             <motion.div
@@ -227,8 +229,8 @@ export default function DashboardPage() {
                             <div
                                 key={index}
                                 className={`text-center p-4 rounded-xl ${badge.earned
-                                        ? 'bg-white/20'
-                                        : 'bg-white/5 opacity-50'
+                                    ? 'bg-white/20'
+                                    : 'bg-white/5 opacity-50'
                                     }`}
                             >
                                 <div className="text-3xl mb-2">{badge.icon}</div>
