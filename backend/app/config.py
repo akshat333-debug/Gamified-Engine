@@ -24,6 +24,12 @@ class Settings(BaseSettings):
     def cors_origins_list(self) -> list[str]:
         return [origin.strip() for origin in self.cors_origins.split(",")]
     
+    def model_post_init(self, __context):
+        """Post-initialization to fix database URL for Render compatibility."""
+        if self.database_url and self.database_url.startswith("postgres://"):
+            self.database_url = self.database_url.replace("postgres://", "postgresql+asyncpg://", 1)
+
+    
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
