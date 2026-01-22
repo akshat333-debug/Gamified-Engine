@@ -10,7 +10,7 @@ from sqlalchemy.orm import selectinload
 
 from app.database import get_db
 from app.models import (
-    Program, ProblemStatement, Stakeholder, Outcome, Indicator,
+    User, Program, ProblemStatement, Stakeholder, Outcome, Indicator,
     ProgramProvenModel, ProvenModel, Badge, UserBadge
 )
 from app.schemas import (
@@ -36,6 +36,19 @@ async def create_program(
     db: AsyncSession = Depends(get_db)
 ):
     """Create a new program."""
+    # Ensure user exists (auto-create if first time)
+    # This handles the case where Supabase Auth has the user but our local PG does not
+    user = await db.get(User, program_data.user_id)
+    if not user:
+        print(f"👤 Creating missing user record for {program_data.user_id}")
+        new_user = User(
+            id=program_data.user_id,
+            email=f"user_{program_data.user_id}@placeholder.com", # Placeholder until profile sync
+            full_name="New User"
+        )
+        db.add(new_user)
+        await db.commit()
+    
     program = Program(**program_data.model_dump())
     db.add(program)
     await db.commit()
