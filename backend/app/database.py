@@ -50,6 +50,8 @@ class Base(DeclarativeBase):
     pass
 
 
+from sqlalchemy import text
+
 # Import models to register them with Base.metadata
 # noqa: F401
 
@@ -59,6 +61,9 @@ async def init_db():
     from app import models  # noqa: F401
     
     async with engine.begin() as conn:
+        # Enable pgvector extension for embedding support
+        await conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector;"))
+        
         # Create all tables defined in models
         await conn.run_sync(Base.metadata.create_all)
 
