@@ -121,7 +121,7 @@ async def init_db():
                 NOW()
             ),
             (
-                'd4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f8g',
+                'd4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f8d',
                 'Digital Literacy Integration',
                 'Structured approach to building digital skills alongside core academics, supporting NEP 2020 technology integration goals.',
                 'Step 1: Assess infrastructure. Step 2: Train teachers on ed-tech. Step 3: Integrate digital activities. Step 4: Monitor outcomes.',
