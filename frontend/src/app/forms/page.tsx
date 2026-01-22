@@ -160,7 +160,7 @@ export default function FormsPage() {
         }
     };
 
-    const useTemplate = (template: FormTemplate) => {
+    const handleUseTemplate = (template: FormTemplate) => {
         setGeneratedForm({
             form_title: template.name,
             fields: template.fields,
@@ -261,7 +261,7 @@ export default function FormsPage() {
                                     <div
                                         key={template.id}
                                         className="p-4 border border-gray-200 rounded-xl hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer"
-                                        onClick={() => useTemplate(template)}
+                                        onClick={() => handleUseTemplate(template)}
                                     >
                                         <h3 className="font-semibold text-gray-800">{template.name}</h3>
                                         <p className="text-sm text-gray-600 mt-1">{template.description}</p>

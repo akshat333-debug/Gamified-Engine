@@ -30,8 +30,8 @@ export default function LoginPage() {
                 if (error) throw error;
                 router.push('/');
             }
-        } catch (err: any) {
-            setError(err.message || 'Authentication failed');
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Authentication failed');
         } finally {
             setLoading(false);
         }
@@ -101,8 +101,8 @@ export default function LoginPage() {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 className={`p-3 rounded-lg text-sm ${error.includes('email')
-                                        ? 'bg-green-500/20 text-green-200'
-                                        : 'bg-red-500/20 text-red-200'
+                                    ? 'bg-green-500/20 text-green-200'
+                                    : 'bg-red-500/20 text-red-200'
                                     }`}
                             >
                                 {error}

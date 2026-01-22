@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function Header() {
@@ -8,37 +9,37 @@ export default function Header() {
     return (
         <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-                <a href="/" className="flex items-center gap-2">
+                <Link href="/" className="flex items-center gap-2">
                     <span className="text-2xl">🔮</span>
                     <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                         LogicForge
                     </span>
-                </a>
+                </Link>
                 <nav className="flex items-center gap-3">
-                    <a href="/" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
+                    <Link href="/" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
                         Programs
-                    </a>
-                    <a href="/templates" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
+                    </Link>
+                    <Link href="/templates" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
                         📋 Templates
-                    </a>
-                    <a href="/toc-builder" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
+                    </Link>
+                    <Link href="/toc-builder" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
                         🔗 ToC
-                    </a>
-                    <a href="/benchmarks" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
+                    </Link>
+                    <Link href="/benchmarks" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
                         📚 Benchmarks
-                    </a>
-                    <a href="/activities" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
+                    </Link>
+                    <Link href="/activities" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
                         📅 Activities
-                    </a>
-                    <a href="/forms" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
+                    </Link>
+                    <Link href="/forms" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
                         📝 Forms
-                    </a>
-                    <a href="/export" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
+                    </Link>
+                    <Link href="/export" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
                         📥 Export
-                    </a>
-                    <a href="/dashboard" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
+                    </Link>
+                    <Link href="/dashboard" className="text-gray-600 hover:text-indigo-600 transition-colors text-sm">
                         📊 Analytics
-                    </a>
+                    </Link>
 
                     {user ? (
                         <>
@@ -66,12 +67,12 @@ export default function Header() {
                             </div>
                         </>
                     ) : (
-                        <a
+                        <Link
                             href="/login"
                             className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-shadow text-sm font-medium"
                         >
                             Sign In
-                        </a>
+                        </Link>
                     )}
                 </nav>
             </div>

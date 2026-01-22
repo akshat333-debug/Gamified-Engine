@@ -8,270 +8,273 @@ import { Program } from '@/types';
 import axios from 'axios';
 
 export default function ExportPage() {
-    const { user } = useAuth();
-    const [programs, setPrograms] = useState<Program[]>([]);
-    const [selectedProgram, setSelectedProgram] = useState<number | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [exporting, setExporting] = useState<string | null>(null);
-    const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const { user } = useAuth();
+  const [programs, setPrograms] = useState<Program[]>([]);
+  const [selectedProgram, setSelectedProgram] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState<string | null>(null);
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-    useEffect(() => {
-        const fetchPrograms = async () => {
-            try {
-                const data = await api.listPrograms(user?.id);
-                setPrograms(data);
-                if (data.length > 0 && typeof data[0].id === 'number') setSelectedProgram(data[0].id);
-            } catch (error) {
-                console.error('Error:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchPrograms();
-    }, [user?.id]);
-
-    const handleExport = async (format: string, donorType?: string) => {
-        if (!selectedProgram) {
-            setMessage({ type: 'error', text: 'Please select a program first' });
-            return;
-        }
-
-        setExporting(format + (donorType || ''));
-        setMessage(null);
-
-        try {
-            let url = `${API_URL}/api/export/${selectedProgram}`;
-            let filename = `program-${selectedProgram}`;
-
-            switch (format) {
-                case 'pdf':
-                    url += '/pdf';
-                    filename += '.pdf';
-                    break;
-                case 'csv':
-                    url += '/csv';
-                    filename += '.csv';
-                    break;
-                case 'json':
-                    url += '/json';
-                    filename += '.json';
-                    break;
-                case 'donor':
-                    url += `/donor/${donorType}`;
-                    filename += `-${donorType}.txt`;
-                    break;
-            }
-
-            const response = await axios.get(url, { responseType: 'blob' });
-
-            // Create download link
-            const blob = new Blob([response.data]);
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = filename;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            setMessage({ type: 'success', text: `Successfully exported as ${format.toUpperCase()}${donorType ? ` (${donorType.toUpperCase()})` : ''}` });
-        } catch (error: any) {
-            console.error('Export error:', error);
-            setMessage({ type: 'error', text: error.response?.data?.detail || 'Export failed. Please try again.' });
-        } finally {
-            setExporting(null);
-        }
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      try {
+        const data = await api.listPrograms(user?.id);
+        setPrograms(data);
+        if (data.length > 0 && typeof data[0].id === 'number') setSelectedProgram(data[0].id);
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
+      }
     };
+    fetchPrograms();
+  }, [user?.id]);
 
-    const exportFormats = [
-        {
-            id: 'pdf',
-            name: 'PDF Document',
-            icon: '📄',
-            description: 'Comprehensive programme design document with all details',
-            color: '#ef4444'
-        },
-        {
-            id: 'csv',
-            name: 'CSV Spreadsheet',
-            icon: '📊',
-            description: 'Outcomes and indicators in spreadsheet format',
-            color: '#22c55e'
-        },
-        {
-            id: 'json',
-            name: 'JSON Data',
-            icon: '🔗',
-            description: 'Complete programme data for integration',
-            color: '#f59e0b'
-        }
-    ];
-
-    const donorFormats = [
-        {
-            id: 'usaid',
-            name: 'USAID Format',
-            icon: '🇺🇸',
-            description: 'Standard USAID Results Framework format',
-            color: '#3b82f6'
-        },
-        {
-            id: 'gates',
-            name: 'Gates Foundation',
-            icon: '🏛️',
-            description: 'Gates Foundation reporting template',
-            color: '#8b5cf6'
-        },
-        {
-            id: 'dfid',
-            name: 'FCDO/DFID Format',
-            icon: '🇬🇧',
-            description: 'UK FCDO logframe format',
-            color: '#06b6d4'
-        }
-    ];
-
-    if (loading) {
-        return (
-            <div className="export-page">
-                <div className="loading-container">
-                    <div className="spinner"></div>
-                    <p>Loading your programs...</p>
-                </div>
-                <style jsx>{styles}</style>
-            </div>
-        );
+  const handleExport = async (format: string, donorType?: string) => {
+    if (!selectedProgram) {
+      setMessage({ type: 'error', text: 'Please select a program first' });
+      return;
     }
 
+    setExporting(format + (donorType || ''));
+    setMessage(null);
+
+    try {
+      let url = `${API_URL}/api/export/${selectedProgram}`;
+      let filename = `program-${selectedProgram}`;
+
+      switch (format) {
+        case 'pdf':
+          url += '/pdf';
+          filename += '.pdf';
+          break;
+        case 'csv':
+          url += '/csv';
+          filename += '.csv';
+          break;
+        case 'json':
+          url += '/json';
+          filename += '.json';
+          break;
+        case 'donor':
+          url += `/donor/${donorType}`;
+          filename += `-${donorType}.txt`;
+          break;
+      }
+
+      const response = await axios.get(url, { responseType: 'blob' });
+
+      // Create download link
+      const blob = new Blob([response.data]);
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      setMessage({ type: 'success', text: `Successfully exported as ${format.toUpperCase()}${donorType ? ` (${donorType.toUpperCase()})` : ''}` });
+    } catch (error: unknown) {
+      console.error('Export error:', error);
+      const errMsg = axios.isAxiosError(error)
+        ? error.response?.data?.detail
+        : 'Export failed. Please try again.';
+      setMessage({ type: 'error', text: errMsg || 'Export failed.' });
+    } finally {
+      setExporting(null);
+    }
+  };
+
+  const exportFormats = [
+    {
+      id: 'pdf',
+      name: 'PDF Document',
+      icon: '📄',
+      description: 'Comprehensive programme design document with all details',
+      color: '#ef4444'
+    },
+    {
+      id: 'csv',
+      name: 'CSV Spreadsheet',
+      icon: '📊',
+      description: 'Outcomes and indicators in spreadsheet format',
+      color: '#22c55e'
+    },
+    {
+      id: 'json',
+      name: 'JSON Data',
+      icon: '🔗',
+      description: 'Complete programme data for integration',
+      color: '#f59e0b'
+    }
+  ];
+
+  const donorFormats = [
+    {
+      id: 'usaid',
+      name: 'USAID Format',
+      icon: '🇺🇸',
+      description: 'Standard USAID Results Framework format',
+      color: '#3b82f6'
+    },
+    {
+      id: 'gates',
+      name: 'Gates Foundation',
+      icon: '🏛️',
+      description: 'Gates Foundation reporting template',
+      color: '#8b5cf6'
+    },
+    {
+      id: 'dfid',
+      name: 'FCDO/DFID Format',
+      icon: '🇬🇧',
+      description: 'UK FCDO logframe format',
+      color: '#06b6d4'
+    }
+  ];
+
+  if (loading) {
     return (
-        <div className="export-page">
-            <motion.div
-                className="export-container"
+      <div className="export-page">
+        <div className="loading-container">
+          <div className="spinner"></div>
+          <p>Loading your programs...</p>
+        </div>
+        <style jsx>{styles}</style>
+      </div>
+    );
+  }
+
+  return (
+    <div className="export-page">
+      <motion.div
+        className="export-container"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <div className="header">
+          <h1>📥 Export Center</h1>
+          <p>Export your programme designs in various formats for different purposes</p>
+        </div>
+
+        {/* Program Selector */}
+        <div className="program-selector">
+          <label>Select Programme to Export:</label>
+          <select
+            value={selectedProgram || ''}
+            onChange={(e) => setSelectedProgram(Number(e.target.value))}
+          >
+            <option value="" disabled>Choose a programme...</option>
+            {programs.map((program) => (
+              <option key={program.id} value={program.id}>
+                {program.title || `Program ${program.id}`}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Message Display */}
+        {message && (
+          <motion.div
+            className={`message ${message.type}`}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            {message.type === 'success' ? '✅' : '❌'} {message.text}
+          </motion.div>
+        )}
+
+        {/* Standard Formats */}
+        <section className="export-section">
+          <h2>📁 Standard Formats</h2>
+          <div className="format-grid">
+            {exportFormats.map((format, index) => (
+              <motion.div
+                key={format.id}
+                className="format-card"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-            >
-                <div className="header">
-                    <h1>📥 Export Center</h1>
-                    <p>Export your programme designs in various formats for different purposes</p>
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ scale: 1.02 }}
+              >
+                <div className="format-icon" style={{ background: `${format.color}20` }}>
+                  <span>{format.icon}</span>
                 </div>
-
-                {/* Program Selector */}
-                <div className="program-selector">
-                    <label>Select Programme to Export:</label>
-                    <select
-                        value={selectedProgram || ''}
-                        onChange={(e) => setSelectedProgram(Number(e.target.value))}
-                    >
-                        <option value="" disabled>Choose a programme...</option>
-                        {programs.map((program) => (
-                            <option key={program.id} value={program.id}>
-                                {program.title || `Program ${program.id}`}
-                            </option>
-                        ))}
-                    </select>
+                <div className="format-info">
+                  <h3>{format.name}</h3>
+                  <p>{format.description}</p>
                 </div>
+                <button
+                  className="export-btn"
+                  style={{ background: format.color }}
+                  onClick={() => handleExport(format.id)}
+                  disabled={!selectedProgram || exporting === format.id}
+                >
+                  {exporting === format.id ? (
+                    <>Exporting...</>
+                  ) : (
+                    <>⬇️ Export</>
+                  )}
+                </button>
+              </motion.div>
+            ))}
+          </div>
+        </section>
 
-                {/* Message Display */}
-                {message && (
-                    <motion.div
-                        className={`message ${message.type}`}
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                    >
-                        {message.type === 'success' ? '✅' : '❌'} {message.text}
-                    </motion.div>
-                )}
+        {/* Donor Formats */}
+        <section className="export-section">
+          <h2>🏢 Donor-Specific Formats</h2>
+          <p className="section-desc">Export in formats tailored for specific donors and funders</p>
+          <div className="format-grid">
+            {donorFormats.map((format, index) => (
+              <motion.div
+                key={format.id}
+                className="format-card donor-card"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 + index * 0.1 }}
+                whileHover={{ scale: 1.02 }}
+              >
+                <div className="format-icon" style={{ background: `${format.color}20` }}>
+                  <span>{format.icon}</span>
+                </div>
+                <div className="format-info">
+                  <h3>{format.name}</h3>
+                  <p>{format.description}</p>
+                </div>
+                <button
+                  className="export-btn"
+                  style={{ background: format.color }}
+                  onClick={() => handleExport('donor', format.id)}
+                  disabled={!selectedProgram || exporting === 'donor' + format.id}
+                >
+                  {exporting === 'donor' + format.id ? (
+                    <>Exporting...</>
+                  ) : (
+                    <>⬇️ Export</>
+                  )}
+                </button>
+              </motion.div>
+            ))}
+          </div>
+        </section>
 
-                {/* Standard Formats */}
-                <section className="export-section">
-                    <h2>📁 Standard Formats</h2>
-                    <div className="format-grid">
-                        {exportFormats.map((format, index) => (
-                            <motion.div
-                                key={format.id}
-                                className="format-card"
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.1 }}
-                                whileHover={{ scale: 1.02 }}
-                            >
-                                <div className="format-icon" style={{ background: `${format.color}20` }}>
-                                    <span>{format.icon}</span>
-                                </div>
-                                <div className="format-info">
-                                    <h3>{format.name}</h3>
-                                    <p>{format.description}</p>
-                                </div>
-                                <button
-                                    className="export-btn"
-                                    style={{ background: format.color }}
-                                    onClick={() => handleExport(format.id)}
-                                    disabled={!selectedProgram || exporting === format.id}
-                                >
-                                    {exporting === format.id ? (
-                                        <>Exporting...</>
-                                    ) : (
-                                        <>⬇️ Export</>
-                                    )}
-                                </button>
-                            </motion.div>
-                        ))}
-                    </div>
-                </section>
+        {/* No Programs State */}
+        {programs.length === 0 && (
+          <div className="no-programs">
+            <span>📋</span>
+            <h3>No Programmes Found</h3>
+            <p>Create a programme first or use a template to get started</p>
+            <a href="/templates" className="template-link">Browse Templates →</a>
+          </div>
+        )}
+      </motion.div>
 
-                {/* Donor Formats */}
-                <section className="export-section">
-                    <h2>🏢 Donor-Specific Formats</h2>
-                    <p className="section-desc">Export in formats tailored for specific donors and funders</p>
-                    <div className="format-grid">
-                        {donorFormats.map((format, index) => (
-                            <motion.div
-                                key={format.id}
-                                className="format-card donor-card"
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.3 + index * 0.1 }}
-                                whileHover={{ scale: 1.02 }}
-                            >
-                                <div className="format-icon" style={{ background: `${format.color}20` }}>
-                                    <span>{format.icon}</span>
-                                </div>
-                                <div className="format-info">
-                                    <h3>{format.name}</h3>
-                                    <p>{format.description}</p>
-                                </div>
-                                <button
-                                    className="export-btn"
-                                    style={{ background: format.color }}
-                                    onClick={() => handleExport('donor', format.id)}
-                                    disabled={!selectedProgram || exporting === 'donor' + format.id}
-                                >
-                                    {exporting === 'donor' + format.id ? (
-                                        <>Exporting...</>
-                                    ) : (
-                                        <>⬇️ Export</>
-                                    )}
-                                </button>
-                            </motion.div>
-                        ))}
-                    </div>
-                </section>
-
-                {/* No Programs State */}
-                {programs.length === 0 && (
-                    <div className="no-programs">
-                        <span>📋</span>
-                        <h3>No Programmes Found</h3>
-                        <p>Create a programme first or use a template to get started</p>
-                        <a href="/templates" className="template-link">Browse Templates →</a>
-                    </div>
-                )}
-            </motion.div>
-
-            <style jsx>{styles}</style>
-        </div>
-    );
+      <style jsx>{styles}</style>
+    </div>
+  );
 }
 
 const styles = `

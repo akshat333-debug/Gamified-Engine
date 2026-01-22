@@ -2,37 +2,33 @@
 
 import { useState, useEffect } from 'react';
 
+import { useState, useEffect, useSyncExternalStore } from 'react';
+
 export function useOffline() {
-    const [isOffline, setIsOffline] = useState(false);
+    const isOffline = useSyncExternalStore(
+        (callback) => {
+            window.addEventListener('online', callback);
+            window.addEventListener('offline', callback);
+            return () => {
+                window.removeEventListener('online', callback);
+                window.removeEventListener('offline', callback);
+            };
+        },
+        () => !navigator.onLine,
+        () => false
+    );
+
     const [wasOffline, setWasOffline] = useState(false);
 
     useEffect(() => {
-        // Check initial status
-        setIsOffline(!navigator.onLine);
-
-        const handleOnline = () => {
-            setIsOffline(false);
-            if (wasOffline) {
-                // Trigger sync when back online
-                console.log('🌐 Back online! Syncing...');
-                syncOfflineData();
-            }
-        };
-
-        const handleOffline = () => {
-            setIsOffline(true);
+        if (isOffline) {
             setWasOffline(true);
             console.log('📴 Gone offline');
-        };
-
-        window.addEventListener('online', handleOnline);
-        window.addEventListener('offline', handleOffline);
-
-        return () => {
-            window.removeEventListener('online', handleOnline);
-            window.removeEventListener('offline', handleOffline);
-        };
-    }, [wasOffline]);
+        } else if (wasOffline) {
+            console.log('🌐 Back online! Syncing...');
+            syncOfflineData();
+        }
+    }, [isOffline, wasOffline]);
 
     return { isOffline, wasOffline };
 }
@@ -42,6 +38,7 @@ async function syncOfflineData() {
     if ('serviceWorker' in navigator && 'SyncManager' in window) {
         const registration = await navigator.serviceWorker.ready;
         try {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             await (registration as any).sync.register('sync-programs');
             console.log('✅ Sync registered');
         } catch (error) {
@@ -50,20 +47,24 @@ async function syncOfflineData() {
     }
 }
 
+interface BeforeInstallPromptEvent extends Event {
+    prompt: () => Promise<void>;
+    userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+}
+
 export function usePWAInstall() {
-    const [installPrompt, setInstallPrompt] = useState<any>(null);
+    const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
     const [isInstalled, setIsInstalled] = useState(false);
 
     useEffect(() => {
         // Check if already installed
         if (window.matchMedia('(display-mode: standalone)').matches) {
             setIsInstalled(true);
-            return;
         }
 
         const handleBeforeInstall = (e: Event) => {
             e.preventDefault();
-            setInstallPrompt(e);
+            setInstallPrompt(e as BeforeInstallPromptEvent);
         };
 
         window.addEventListener('beforeinstallprompt', handleBeforeInstall);

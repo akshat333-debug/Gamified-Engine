@@ -22,10 +22,21 @@ interface NIPUNGrade {
     numeracy: Record<string, string>;
 }
 
+interface NipunData {
+    grades: Record<string, { reading: Record<string, string>; numeracy: Record<string, string> }>;
+}
+
+interface NationalStats {
+    literacy_rate: number;
+    fln_proficiency: number;
+    enrollment_rate: number;
+    dropout_rate: number;
+}
+
 export default function BenchmarksPage() {
     const [states, setStates] = useState<StateStats[]>([]);
-    const [nipun, setNipun] = useState<any>(null);
-    const [national, setNational] = useState<any>(null);
+    const [nipun, setNipun] = useState<NipunData | null>(null);
+    const [national, setNational] = useState<NationalStats | null>(null);
     const [selectedGrade, setSelectedGrade] = useState<string>('grade_1');
     const [selectedRegion, setSelectedRegion] = useState<string>('');
     const [compareStates, setCompareStates] = useState<[string, string]>(['Bihar', 'Kerala']);

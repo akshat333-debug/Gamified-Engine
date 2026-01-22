@@ -79,7 +79,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         // Skip if Supabase is not configured
         if (!supabase) {
-            setLoading(false);
             return;
         }
 
