@@ -73,35 +73,76 @@ async def init_db():
         
         if count == 0:
             print("🌱 Seeding initial Proven Models...")
-            # Insert Teaching at the Right Level (TaRL)
             await conn.execute(text("""
-                INSERT INTO proven_models (id, name, description, implementation_guide, evidence_base, themes, target_outcomes, created_at)
-                VALUES (
+                INSERT INTO proven_models (id, name, description, implementation_guide, evidence_base, themes, target_outcomes, created_at) VALUES 
+                (
                     'd290f1ee-6c54-4b01-90e6-d701748f0851',
                     'Teaching at the Right Level (TaRL)',
-                    'An evidence-based pedagogical approach that groups children by learning level rather than age or grade.',
-                    'Focuses on basic reading and arithmetic skills. Conducted for 1-2 hours daily.',
-                    'Proven effective by J-PAL randomized control trials in India and Africa.',
-                    ARRAY['FLN', 'Education'],
-                    ARRAY['Reading Fluency', 'Basic Numeracy'],
+                    'An evidence-based approach that groups children by learning level rather than age or grade, enabling targeted instruction for foundational skills.',
+                    'Step 1: Conduct baseline assessments. Step 2: Group by ability. Step 3: Use structured activities. Step 4: Reassess regularly.',
+                    'Rigorous RCTs by J-PAL shown 0.7 SD improvement. Scaled to millions in India via government partnerships. Aligned with NIPUN Bharat goals.',
+                    ARRAY['FLN'],
+                    ARRAY['Improved reading fluency', 'Number recognition', 'Basic arithmetic'],
                     NOW()
-                );
-            """))
-            # Insert Career Readiness Model
-            await conn.execute(text("""
-                INSERT INTO proven_models (id, name, description, implementation_guide, evidence_base, themes, target_outcomes, created_at)
-                VALUES (
+                ),
+                (
                     'a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d',
-                    'Career Quest / Magic Bus',
-                    'A mentorship-based life skills and career readiness program for adolescents.',
-                    'Uses activity-based learning to build resilience, communication, and problem-solving skills.',
-                    'Demonstrated impact on school retention and employability in urban slums.',
-                    ARRAY['Career Readiness', 'Life Skills'],
-                    ARRAY['Employability', 'Soft Skills'],
+                    'Remedial Learning Camps',
+                    'Intensive short-term learning camps focused on catching up children who are behind grade-level expectations. Aligned with NEP 2020 goals.',
+                    'Step 1: Identify at-risk students. Step 2: Organize 30-45 day intensive camps. Step 3: Focus on FLN competencies per NIPUN Bharat.',
+                    'Used by Pratham and state governments. Shows significant gains in foundational literacy as per ASER assessments.',
+                    ARRAY['FLN', 'Life Skills'],
+                    ARRAY['Grade-level reading per NIPUN 3', 'Math competency'],
+                    NOW()
+                ),
+                (
+                    'b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e',
+                    'Career Awareness Workshops',
+                    'Structured workshops exposing students to diverse career paths, building agency and decision-making skills per NEP 2020.',
+                    'Step 1: Map local career opportunities. Step 2: Invite professionals. Step 3: Conduct skill-building activities. Step 4: Goal-setting exercises.',
+                    'Research shows improved career aspirations and self-efficacy. Particularly effective for first-generation learners.',
+                    ARRAY['Career Readiness'],
+                    ARRAY['Career awareness', 'Goal setting', 'Self-efficacy', 'Agency building'],
+                    NOW()
+                ),
+                (
+                    'c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f',
+                    'Peer Learning Circles',
+                    'Student-led small group learning that promotes collaboration and deeper understanding through constructivist pedagogy.',
+                    'Step 1: Train student facilitators. Step 2: Form groups of 4-6. Step 3: Assign structured prompts. Step 4: Rotate leadership.',
+                    'Meta-analyses show 0.4-0.5 SD effects. Builds academic and social-emotional skills aligned with NCF 2023.',
+                    ARRAY['FLN', 'Life Skills', 'STEM'],
+                    ARRAY['Collaborative skills', 'Academic achievement', 'Leadership'],
+                    NOW()
+                ),
+                (
+                    'd4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f8g',
+                    'Digital Literacy Integration',
+                    'Structured approach to building digital skills alongside core academics, supporting NEP 2020 technology integration goals.',
+                    'Step 1: Assess infrastructure. Step 2: Train teachers on ed-tech. Step 3: Integrate digital activities. Step 4: Monitor outcomes.',
+                    'Growing evidence for blended learning. Critical for 21st-century skills and PM eVidya alignment.',
+                    ARRAY['STEM', 'Career Readiness'],
+                    ARRAY['Digital literacy', 'Self-directed learning', 'Tech skills'],
                     NOW()
                 );
             """))
-            print("✅ Seeding complete!")
+            print("✅ Seeding Proven Models complete!")
+
+        # Check if badges table is empty
+        result = await conn.execute(text("SELECT COUNT(*) FROM badges"))
+        count = result.scalar()
+        
+        if count == 0:
+            print("🌱 Seeding initial Badges...")
+            await conn.execute(text("""
+                INSERT INTO badges (name, description, icon, step_number, xp_reward) VALUES
+                ('Problem Explorer', 'Defined your challenge statement clearly', '🔍', 1, 100),
+                ('Stakeholder Mapper', 'Identified key stakeholders for your program', '🤝', 2, 150),
+                ('Evidence Seeker', 'Selected proven models for your intervention', '📚', 3, 150),
+                ('Indicator Architect', 'Built measurable indicators for your outcomes', '📊', 4, 200),
+                ('Program Designer', 'Generated your complete program design document', '🏆', 5, 250);
+            """))
+            print("✅ Seeding Badges complete!")
 
 
 async def get_db() -> AsyncSession:
