@@ -7,16 +7,27 @@ from app.config import get_settings
 
 settings = get_settings()
 
-# Ensure Render's postgres:// URL is compatible with AsyncPG
-database_url = settings.database_url
-if database_url and database_url.startswith("postgres://"):
-    database_url = database_url.replace("postgres://", "postgresql+asyncpg://", 1)
+try:
+    # Ensure Render's postgres:// URL is compatible with AsyncPG
+    database_url = settings.database_url
+    if database_url and database_url.startswith("postgres://"):
+        database_url = database_url.replace("postgres://", "postgresql+asyncpg://", 1)
+    
+    # Debug print to verify URL (mask password)
+    if database_url:
+        safe_url = database_url.split("@")[-1] if "@" in database_url else "UNKNOWN"
+        print(f"🔌 Connecting to database at: ...@{safe_url}")
+    else:
+        print("❌ DATABASE_URL is missing or empty!")
 
-engine = create_async_engine(
-    database_url,
-    echo=settings.app_env == "development",
-    future=True
-)
+    engine = create_async_engine(
+        database_url,
+        echo=settings.app_env == "development",
+        future=True
+    )
+except Exception as e:
+    print(f"❌ Error creating database engine: {str(e)}")
+    raise e
 
 async_session = async_sessionmaker(
     engine,
