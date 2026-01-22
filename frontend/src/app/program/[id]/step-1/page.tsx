@@ -44,8 +44,12 @@ export default function Step1Page() {
                 setRefinedText(problem.refined_text || '');
                 setRootCauses(problem.root_causes || []);
                 setTheme(problem.theme || '');
-            } catch {
-                // No existing problem statement
+            } catch (error: any) {
+                if (error.response?.status === 404) {
+                    // This is expected for new programs step 1, ignore
+                } else {
+                    console.error('Failed to load problem statement:', error);
+                }
             }
         } catch (error) {
             console.error('Failed to load program:', error);
