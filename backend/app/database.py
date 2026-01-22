@@ -7,8 +7,13 @@ from app.config import get_settings
 
 settings = get_settings()
 
+# Ensure Render's postgres:// URL is compatible with AsyncPG
+database_url = settings.database_url
+if database_url and database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql+asyncpg://", 1)
+
 engine = create_async_engine(
-    settings.database_url,
+    database_url,
     echo=settings.app_env == "development",
     future=True
 )
