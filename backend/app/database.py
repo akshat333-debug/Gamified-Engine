@@ -67,6 +67,42 @@ async def init_db():
         # Create all tables defined in models
         await conn.run_sync(Base.metadata.create_all)
 
+        # Check if proven_models table is empty
+        result = await conn.execute(text("SELECT COUNT(*) FROM proven_models"))
+        count = result.scalar()
+        
+        if count == 0:
+            print("🌱 Seeding initial Proven Models...")
+            # Insert Teaching at the Right Level (TaRL)
+            await conn.execute(text("""
+                INSERT INTO proven_models (id, name, description, implementation_guide, evidence_base, themes, target_outcomes, created_at)
+                VALUES (
+                    'd290f1ee-6c54-4b01-90e6-d701748f0851',
+                    'Teaching at the Right Level (TaRL)',
+                    'An evidence-based pedagogical approach that groups children by learning level rather than age or grade.',
+                    'Focuses on basic reading and arithmetic skills. Conducted for 1-2 hours daily.',
+                    'Proven effective by J-PAL randomized control trials in India and Africa.',
+                    ARRAY['FLN', 'Education'],
+                    ARRAY['Reading Fluency', 'Basic Numeracy'],
+                    NOW()
+                );
+            """))
+            # Insert Career Readiness Model
+            await conn.execute(text("""
+                INSERT INTO proven_models (id, name, description, implementation_guide, evidence_base, themes, target_outcomes, created_at)
+                VALUES (
+                    'a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d',
+                    'Career Quest / Magic Bus',
+                    'A mentorship-based life skills and career readiness program for adolescents.',
+                    'Uses activity-based learning to build resilience, communication, and problem-solving skills.',
+                    'Demonstrated impact on school retention and employability in urban slums.',
+                    ARRAY['Career Readiness', 'Life Skills'],
+                    ARRAY['Employability', 'Soft Skills'],
+                    NOW()
+                );
+            """))
+            print("✅ Seeding complete!")
+
 
 async def get_db() -> AsyncSession:
     """Dependency for FastAPI routes to get database session."""
