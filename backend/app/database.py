@@ -50,10 +50,17 @@ class Base(DeclarativeBase):
     pass
 
 
+# Import models to register them with Base.metadata
+# noqa: F401
+
 async def init_db():
-    """Initialize database - tables created via SQL schema in Supabase."""
-    # Tables are created manually via database/schema.sql in Supabase SQL Editor
-    pass
+    """Initialize database - create tables if they don't exist."""
+    # Import models here to avoid circular imports during startup
+    from app import models  # noqa: F401
+    
+    async with engine.begin() as conn:
+        # Create all tables defined in models
+        await conn.run_sync(Base.metadata.create_all)
 
 
 async def get_db() -> AsyncSession:
