@@ -8,10 +8,19 @@ from app.config import get_settings
 settings = get_settings()
 
 try:
-    # Ensure Render's postgres:// URL is compatible with AsyncPG
+    # Ensure Render's URL is compatible with AsyncPG
     database_url = settings.database_url
-    if database_url and database_url.startswith("postgres://"):
-        database_url = database_url.replace("postgres://", "postgresql+asyncpg://", 1)
+    
+    # Log the original scheme for debugging
+    if database_url:
+        scheme = database_url.split("://")[0]
+        print(f"🔌 Original Database Scheme: {scheme}")
+    
+    if database_url and not database_url.startswith("postgresql+asyncpg://"):
+        if database_url.startswith("postgres://"):
+            database_url = database_url.replace("postgres://", "postgresql+asyncpg://", 1)
+        elif database_url.startswith("postgresql://"):
+            database_url = database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
     
     # Debug print to verify URL (mask password)
     if database_url:
