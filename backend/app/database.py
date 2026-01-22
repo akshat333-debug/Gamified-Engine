@@ -67,6 +67,12 @@ async def init_db():
         # Create all tables defined in models
         await conn.run_sync(Base.metadata.create_all)
 
+        # MIGRATION: Check if badges table has xp_reward column (fix for existing DBs)
+        try:
+            await conn.execute(text("ALTER TABLE badges ADD COLUMN IF NOT EXISTS xp_reward INTEGER DEFAULT 0"))
+        except Exception:
+            pass # Ignore if already exists or other minor issue
+
         # Check if proven_models table is empty
         result = await conn.execute(text("SELECT COUNT(*) FROM proven_models"))
         count = result.scalar()

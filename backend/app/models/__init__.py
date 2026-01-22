@@ -179,6 +179,7 @@ class Badge(Base):
     description = Column(Text)
     icon = Column(String(100))
     step_number = Column(Integer)
+    xp_reward = Column(Integer, default=0)
     created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
     
     __table_args__ = (
