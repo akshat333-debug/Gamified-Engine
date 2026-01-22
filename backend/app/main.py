@@ -18,6 +18,7 @@ async def lifespan(app: FastAPI):
     """Application lifespan handler."""
     # Startup
     print("🚀 LogicForge Backend starting...")
+    print(f"✅ Loaded CORS Origins: {settings.cors_origins_list}")
     await init_db()
     print("✅ Database initialized")
     yield
