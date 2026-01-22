@@ -57,9 +57,10 @@ export default function FormsPage() {
 
     const loadData = async () => {
         try {
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
             const [userPrograms, templateData] = await Promise.all([
                 api.listPrograms(user?.id),
-                fetch('http://localhost:8000/api/forms/templates').then(r => r.json()),
+                fetch(`${API_URL}/api/forms/templates`).then(r => r.json()),
             ]);
             setPrograms(userPrograms);
             setTemplates(templateData);
@@ -94,7 +95,8 @@ export default function FormsPage() {
 
         setGenerating(true);
         try {
-            const res = await fetch('http://localhost:8000/api/forms/generate', {
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const res = await fetch(`${API_URL}/api/forms/generate`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -127,7 +129,8 @@ export default function FormsPage() {
         if (!formTitle || indicators.length === 0) return;
 
         try {
-            const res = await fetch('http://localhost:8000/api/forms/export-xlsform', {
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const res = await fetch(`${API_URL}/api/forms/export-xlsform`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

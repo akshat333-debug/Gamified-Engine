@@ -85,7 +85,8 @@ export default function ActivitiesPage() {
 
     const loadActivities = async (programId: string) => {
         try {
-            const res = await fetch(`http://localhost:8000/api/activities/program/${programId}`);
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const res = await fetch(`${API_URL}/api/activities/program/${programId}`);
             const data = await res.json();
             setActivities(data);
         } catch (error) {
@@ -97,7 +98,8 @@ export default function ActivitiesPage() {
         if (!newActivity.title || !newActivity.start_date || !newActivity.end_date) return;
 
         try {
-            const res = await fetch('http://localhost:8000/api/activities/', {
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const res = await fetch(`${API_URL}/api/activities/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -126,7 +128,8 @@ export default function ActivitiesPage() {
 
     const handleUpdateStatus = async (activityId: string, newStatus: string) => {
         try {
-            const res = await fetch(`http://localhost:8000/api/activities/${activityId}`, {
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const res = await fetch(`${API_URL}/api/activities/${activityId}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: newStatus }),

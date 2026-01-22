@@ -43,7 +43,8 @@ export default function TemplatesPage() {
 
     const loadTemplates = async () => {
         try {
-            const res = await fetch('http://localhost:8000/api/templates/');
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const res = await fetch(`${API_URL}/api/templates/`);
             const data = await res.json();
             setTemplates(data);
         } catch (error) {
@@ -61,7 +62,8 @@ export default function TemplatesPage() {
 
         setCreatingFrom(templateId);
         try {
-            const res = await fetch(`http://localhost:8000/api/templates/${templateId}/create-program`, {
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const res = await fetch(`${API_URL}/api/templates/${templateId}/create-program`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ user_id: user.id }),
@@ -117,8 +119,8 @@ export default function TemplatesPage() {
                     <button
                         onClick={() => setSelectedTheme('')}
                         className={`px-4 py-2 rounded-full font-medium transition-all ${selectedTheme === ''
-                                ? 'bg-indigo-600 text-white'
-                                : 'bg-white text-gray-600 hover:bg-gray-100'
+                            ? 'bg-indigo-600 text-white'
+                            : 'bg-white text-gray-600 hover:bg-gray-100'
                             }`}
                     >
                         All Themes
@@ -128,8 +130,8 @@ export default function TemplatesPage() {
                             key={theme}
                             onClick={() => setSelectedTheme(theme)}
                             className={`px-4 py-2 rounded-full font-medium transition-all flex items-center gap-2 ${selectedTheme === theme
-                                    ? 'bg-indigo-600 text-white'
-                                    : `${colors.bg} ${colors.text} hover:opacity-80`
+                                ? 'bg-indigo-600 text-white'
+                                : `${colors.bg} ${colors.text} hover:opacity-80`
                                 }`}
                         >
                             <span>{colors.icon}</span>

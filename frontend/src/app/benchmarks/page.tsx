@@ -37,13 +37,23 @@ export default function BenchmarksPage() {
 
     const loadBenchmarks = async () => {
         try {
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            console.log('Fetching benchmarks from:', API_URL);
+
             const [statesRes, nipunRes, nationalRes] = await Promise.all([
-                fetch('http://localhost:8000/api/benchmarks/states'),
-                fetch('http://localhost:8000/api/benchmarks/nipun'),
-                fetch('http://localhost:8000/api/benchmarks/national'),
+                fetch(`${API_URL}/api/benchmarks/states`),
+                fetch(`${API_URL}/api/benchmarks/nipun`),
+                fetch(`${API_URL}/api/benchmarks/national`),
             ]);
 
-            setStates(await statesRes.json());
+            const statesData = await statesRes.json();
+            if (Array.isArray(statesData)) {
+                setStates(statesData);
+            } else {
+                console.error('Invalid states data format:', statesData);
+                setStates([]);
+            }
+
             setNipun(await nipunRes.json());
             setNational(await nationalRes.json());
         } catch (error) {
