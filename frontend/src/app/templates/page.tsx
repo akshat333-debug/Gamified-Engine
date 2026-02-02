@@ -45,10 +45,17 @@ export default function TemplatesPage() {
         try {
             const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
             const res = await fetch(`${API_URL}/api/templates/`);
+            if (!res.ok) {
+                console.error('Failed to load templates: HTTP', res.status);
+                setTemplates([]);
+                return;
+            }
             const data = await res.json();
-            setTemplates(data);
+            // Defensive check: ensure data is an array
+            setTemplates(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error('Failed to load templates:', error);
+            setTemplates([]);
         } finally {
             setLoading(false);
         }
