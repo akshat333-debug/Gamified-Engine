@@ -30,18 +30,21 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Demo profile for when auth is not configured
-const DEMO_PROFILE: UserProfile = {
+// Demo profile factory - XP/level will be fetched dynamically from backend
+const createDemoProfile = (stats?: { total_xp: number; level: number; current_streak: number }): UserProfile => ({
     id: 'demo-user',
     email: 'demo@logicforge.app',
     full_name: 'Demo User',
     avatar_url: null,
     organization_id: null,
     role: 'program_manager',
-    total_xp: 850,
-    level: 2,
-    current_streak: 5,
-};
+    total_xp: stats?.total_xp ?? 0,
+    level: stats?.level ?? 1,
+    current_streak: stats?.current_streak ?? 0,
+});
+
+// Initial demo profile with default values (will be updated on mount)
+const DEMO_PROFILE = createDemoProfile();
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
@@ -86,8 +89,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const refreshProfile = async () => {
         if (user) {
             await fetchProfile(user.id);
+        } else if (!supabase) {
+            // In demo mode, refresh stats from backend
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            try {
+                const statsRes = await fetch(`${API_URL}/api/gamification/stats`);
+                if (statsRes.ok) {
+                    const stats = await statsRes.json();
+                    setProfile(createDemoProfile({
+                        total_xp: stats.total_xp,
+                        level: stats.level,
+                        current_streak: stats.current_streak,
+                    }));
+                }
+            } catch (e) {
+                console.warn('Could not refresh demo stats');
+            }
         }
     };
+
+    useEffect(() => {
+        // In demo mode (no Supabase), fetch gamification stats from backend
+        if (!supabase) {
+            const fetchDemoStats = async () => {
+                const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+                try {
+                    // Fetch stats for demo user from backend
+                    const statsRes = await fetch(`${API_URL}/api/gamification/stats`);
+                    if (statsRes.ok) {
+                        const stats = await statsRes.json();
+                        setProfile(createDemoProfile({
+                            total_xp: stats.total_xp,
+                            level: stats.level,
+                            current_streak: stats.current_streak,
+                        }));
+                    }
+                } catch (e) {
+                    console.warn('Could not fetch demo stats, using defaults');
+                    setProfile(createDemoProfile());
+                }
+            };
+            fetchDemoStats();
+            return;
+        }
+    }, []);
 
     useEffect(() => {
         // Skip if Supabase is not configured
