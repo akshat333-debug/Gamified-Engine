@@ -137,21 +137,8 @@ async def init_db():
         # Ensure uuid-ossp extension is enabled for uuid_generate_v4()
         await conn.execute(text('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'))
         print("🌱 Seeding Badges (if missing)...")
-        await conn.execute(text("""
-            INSERT INTO badges (id, name, description, icon, step_number, xp_reward) VALUES
-            (uuid_generate_v4(), 'Problem Explorer', 'Defined your challenge statement clearly', '🔍', 1, 100),
-            (uuid_generate_v4(), 'Stakeholder Mapper', 'Identified key stakeholders for your program', '🤝', 2, 150),
-            (uuid_generate_v4(), 'Evidence Seeker', 'Selected proven models for your intervention', '📚', 3, 150),
-            (uuid_generate_v4(), 'Indicator Architect', 'Built measurable indicators for your outcomes', '📊', 4, 200),
-            (uuid_generate_v4(), 'Program Designer', 'Generated your complete program design document', '🏆', 5, 250)
-            ON CONFLICT DO NOTHING; -- Assuming name is not unique constraint, but we rely on execution count check being removed. 
-            -- Actually, to avoid dupes purely by name if we run this often without unique constraint:
-            -- Better approach: Check existence via subquery or rely on unique constraint if exists. 
-            -- Adding temporary unique constraint logic if needed, but for now assuming clean state or manual cleanup.
-            -- SAFE FIX: Use "NOT EXISTS" logic:
-        """))
         
-        # Better safe seed for Badges to avoid duplicates without unique constraint
+        # Safe seed for Badges using NOT EXISTS to avoid duplicates
         await conn.execute(text("""
             INSERT INTO badges (id, name, description, icon, step_number, xp_reward)
             SELECT uuid_generate_v4(), n, d, i, s, x
