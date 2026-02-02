@@ -53,18 +53,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const fetchProfile = async (userId: string) => {
         try {
-            const mockProfile: UserProfile = {
+            // Fetch real gamification stats from backend
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            let stats = { total_xp: 0, level: 1, current_streak: 0 };
+
+            try {
+                const statsRes = await fetch(`${API_URL}/api/gamification/stats?user_id=${userId}`);
+                if (statsRes.ok) {
+                    stats = await statsRes.json();
+                }
+            } catch (e) {
+                console.warn('Could not fetch gamification stats, using defaults');
+            }
+
+            const dynamicProfile: UserProfile = {
                 id: userId,
                 email: user?.email || '',
                 full_name: user?.user_metadata?.full_name || null,
                 avatar_url: null,
                 organization_id: null,
                 role: 'program_manager',
-                total_xp: 850,
-                level: 2,
-                current_streak: 5,
+                total_xp: stats.total_xp,
+                level: stats.level,
+                current_streak: stats.current_streak,
             };
-            setProfile(mockProfile);
+            setProfile(dynamicProfile);
         } catch (error) {
             console.error('Error fetching profile:', error);
         }

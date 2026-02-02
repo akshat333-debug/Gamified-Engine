@@ -56,13 +56,14 @@ class StreakResponse(BaseModel):
 # Endpoints
 @router.get("/stats", response_model=UserStatsResponse)
 async def get_user_stats(
+    user_id: Optional[UUID] = None,
     db: AsyncSession = Depends(get_db),
     gamification: GamificationService = Depends(get_gamification_service)
 ):
-    """Get current user's gamification stats."""
-    # In production, would get user_id from auth
-    user_id = UUID('00000000-0000-0000-0000-000000000001')
-    stats = await gamification.get_user_stats(db, user_id)
+    """Get user's gamification stats. Pass user_id as query param."""
+    # Use provided user_id or fallback to demo user
+    effective_user_id = user_id or UUID('00000000-0000-0000-0000-000000000001')
+    stats = await gamification.get_user_stats(db, effective_user_id)
     return UserStatsResponse(**stats)
 
 

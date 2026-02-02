@@ -240,6 +240,25 @@ class ApiClient {
         const response = await this.client.get(`/api/analytics/${userId}/stakeholders`);
         return response.data;
     }
+
+    // =====================================================
+    // Gamification
+    // =====================================================
+
+    async getUserStats(userId?: string): Promise<{
+        total_xp: number;
+        level: number;
+        level_title: string;
+        current_streak: number;
+        longest_streak: number;
+        badges_earned: number;
+        programs_completed: number;
+        xp_to_next_level: number;
+    }> {
+        const params = userId ? { user_id: userId } : {};
+        const response = await this.client.get('/api/gamification/stats', { params });
+        return response.data;
+    }
 }
 
 export const api = new ApiClient();

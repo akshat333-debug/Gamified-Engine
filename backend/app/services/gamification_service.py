@@ -102,17 +102,55 @@ class GamificationService:
         ][:limit]
     
     async def get_user_stats(self, db: AsyncSession, user_id: UUID) -> dict:
-        """Get gamification stats for a user."""
-        # In production, this would query the database
+        """Get gamification stats for a user from their actual programs."""
+        from app.models import Program, UserBadge
+        
+        # Get user's programs
+        stmt = select(Program).where(Program.user_id == user_id)
+        result = await db.execute(stmt)
+        programs = list(result.scalars().all())
+        
+        # Calculate XP based on program steps completed
+        # Each step gives XP: step 1 = 100, step 2 = 150, step 3 = 150, step 4 = 200, step 5 = 250
+        step_xp = {1: 100, 2: 150, 3: 150, 4: 200, 5: 250}
+        total_xp = 0
+        programs_completed = 0
+        
+        for program in programs:
+            # XP for each completed step (steps before current_step)
+            for step in range(1, program.current_step):
+                total_xp += step_xp.get(step, 100)
+            
+            if program.status == 'completed':
+                programs_completed += 1
+                # Bonus XP for completion
+                total_xp += 100
+        
+        # Get badges earned
+        badges_stmt = select(func.count()).select_from(UserBadge).where(UserBadge.user_id == user_id)
+        badges_result = await db.execute(badges_stmt)
+        badges_earned = badges_result.scalar() or 0
+        
+        # Calculate level
+        level, level_title = calculate_level(total_xp)
+        
+        # Calculate XP to next level
+        next_level_threshold = 0
+        for lvl, threshold, _ in LEVEL_THRESHOLDS:
+            if lvl == level + 1:
+                next_level_threshold = threshold
+                break
+        xp_to_next_level = max(0, next_level_threshold - total_xp)
+        
         return {
-            'total_xp': 850,
-            'level': 2,
-            'level_title': 'Explorer',
-            'current_streak': 5,
-            'longest_streak': 12,
-            'badges_earned': 3,
-            'programs_completed': 3,
-            'xp_to_next_level': 150,
+            'total_xp': total_xp,
+            'level': level,
+            'level_title': level_title,
+            'current_streak': 0,  # Would need activity tracking table
+            'longest_streak': 0,
+            'badges_earned': badges_earned,
+            'programs_completed': programs_completed,
+            'xp_to_next_level': xp_to_next_level,
         }
 
 
